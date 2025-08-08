@@ -1,3 +1,4 @@
+import state
 import tkinter as tk
 
 master = tk.Tk()
@@ -60,6 +61,12 @@ def on_key(event, row, col):
         for i in range(5):
             entries[row][i].config(state="readonly")
         entries[row + 1][0].focus()
+        state.current_guess = get_current_guess()
+        state.guessed = True
+        print(state.current_guess)
             
+def get_current_guess():
+    return "".join(entry.get() for entry in entries[state.attempts])
 
-master.mainloop()
+if __name__ == "__main__":
+    master.mainloop()
