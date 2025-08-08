@@ -35,6 +35,15 @@ style.configure("Green.TEntry",
                 fieldbackground='green',
                 font=('Arial', 40, 'bold'))
 
+def only_current():
+    for i in range(6):
+        for j in range (5):
+            if i == current_row and j == current_col:
+                entries[i][j].config(state="normal")
+                entries[i][j].focus()
+            else:
+                entries[i][j].config(state="readonly")
+
 def only_letters(char):
     return char.isalpha() or char == ""
 
@@ -51,20 +60,28 @@ for i in range(6):
             font=('Arial', 40, 'bold'),
             width=2,
             justify='center',
-            style="Grey.TEntry")
+            style="Grey.TEntry",
+            state="normal" if i == 0 else "readonly")
         entry.grid(row=i, column=j, padx=5, pady=5)
         entries_row.append(entry)
         
         entry.bind("<KeyRelease>", lambda event, row=i, col=j: on_key(event, row, col))
         
     entries.append(entries_row)
-
+current_row = 0
+current_col = 0
 def on_key(event, row, col):
+    global current_row, current_col
     box = event.widget
     
+    if row != current_row or col != current_col:
+        entries[current_row][current_col].focus()
+        return
+     
     if event.keysym == "BackSpace":
         if col > 0:
-            entries[row][col - 1].focus()
+            current_col -= 1
+            only_current()
         box.delete(0, "end")
         return
         
@@ -73,15 +90,18 @@ def on_key(event, row, col):
         box.delete(0, "end")
         box.insert(0, typed[-1])
         if col < 4:
-            entries[row][col + 1].focus()
+            current_col += 1
+            only_current()
     
     if event.keysym == "Return" and  col == 4:
         state.current_guess = get_current_guess()
         print(state.current_guess)
-        print("bruh the word is ", state.current_word)
+        print("bro the word is ", state.current_word)
         on_submit(row)
         if row < 5:
-            entries[row + 1][0].focus()
+            current_row += 1
+            current_col = 0
+            only_current()
             
 def get_current_guess():
     return ("".join(entry.get() for entry in entries[state.attempts if state.attempts < 6 else 5])).lower()
