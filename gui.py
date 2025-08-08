@@ -16,12 +16,19 @@ label.pack(pady=20)
 frame = tk.Frame(master, bg='black')
 frame.pack()
 
+def only_letters(char):
+    return char.isalpha() or char == ""
+
+validate_command = (master.register(only_letters), "%S")
+
 entries = []
 for i in range(6):
     entries_row = []
     for j in range(5):
         entry = tk.Entry(
             frame,
+            validate="key",
+            validatecommand=(validate_command),
             font=('Arial', 40, 'bold'),
             width=2,
             justify='center',
@@ -34,7 +41,6 @@ for i in range(6):
     entries.append(entries_row)
 
 def on_key(event, row, col):
-   
     box = event.widget
     
     if event.keysym == "BackSpace":
@@ -50,10 +56,10 @@ def on_key(event, row, col):
         if col < 4:
             entries[row][col + 1].focus()
     
-
-        
-        
-        
-
+    if event.keysym == "Return" and  col == 4:
+        for i in range(5):
+            entries[row][i].config(state="readonly")
+        entries[row + 1][0].focus()
+            
 
 master.mainloop()
