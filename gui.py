@@ -1,5 +1,6 @@
 import state
 import tkinter as tk
+from tkinter import ttk
 
 master = tk.Tk()
 master.title("Wordle Game")
@@ -17,6 +18,23 @@ label.pack(pady=20)
 frame = tk.Frame(master, bg='black')
 frame.pack()
 
+style = ttk.Style()
+style.theme_use("clam")
+style.configure("Grey.TEntry", 
+                foreground='black',
+                fieldbackground='grey',
+                font=('Arial', 40, 'bold'))
+
+style.configure("Yellow.TEntry", 
+                foreground='black',
+                fieldbackground='yellow',
+                font=('Arial', 40, 'bold'))
+                
+style.configure("Green.TEntry", 
+                foreground='black',
+                fieldbackground='green',
+                font=('Arial', 40, 'bold'))
+
 def only_letters(char):
     return char.isalpha() or char == ""
 
@@ -26,14 +44,14 @@ entries = []
 for i in range(6):
     entries_row = []
     for j in range(5):
-        entry = tk.Entry(
+        entry = ttk.Entry(
             frame,
             validate="key",
             validatecommand=(validate_command),
             font=('Arial', 40, 'bold'),
             width=2,
             justify='center',
-            bg='grey')
+            style="Grey.TEntry")
         entry.grid(row=i, column=j, padx=5, pady=5)
         entries_row.append(entry)
         
@@ -58,17 +76,30 @@ def on_key(event, row, col):
             entries[row][col + 1].focus()
     
     if event.keysym == "Return" and  col == 4:
-        for i in range(5):
-            entries[row][i].config(state="readonly")
+        state.current_guess = get_current_guess()
+        print(state.current_guess)
+        print("bruh the word is ", state.current_word)
+        on_submit(row)
         if row < 5:
             entries[row + 1][0].focus()
-        state.current_guess = get_current_guess()
-        state.guessed = True
-        state.attempts += 1
-        print(state.current_guess)
             
 def get_current_guess():
-    return "".join(entry.get() for entry in entries[state.attempts if state.attempts < 6 else 5])
+    return ("".join(entry.get() for entry in entries[state.attempts if state.attempts < 6 else 5])).lower()
 
-if __name__ == "__main__":
-    master.mainloop()
+def on_submit(row):
+        if state.current_guess == state.current_word:
+            print("Congratulations! You've guessed the word:", state.current_word)
+            exit()
+        if state.attempts >= 6:
+            print("Game Over! The word was:", state.current_word)
+            exit()
+        for i in range(len(state.current_guess)):
+            if state.current_guess[i] == state.current_word[i]:
+                entries[row][i].config(state="readonly", style="Green.TEntry")
+            elif state.current_guess[i] in state.current_word:
+                entries[row][i].config(state="readonly", style="Yellow.TEntry")
+            else:
+                entries[row][i].config(state="readonly", style="Grey.TEntry")
+        state.attempts += 1
+
+master.mainloop()
