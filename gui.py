@@ -60,13 +60,15 @@ def on_key(event, row, col):
     if event.keysym == "Return" and  col == 4:
         for i in range(5):
             entries[row][i].config(state="readonly")
-        entries[row + 1][0].focus()
+        if row < 5:
+            entries[row + 1][0].focus()
         state.current_guess = get_current_guess()
         state.guessed = True
+        state.attempts += 1
         print(state.current_guess)
             
 def get_current_guess():
-    return "".join(entry.get() for entry in entries[state.attempts])
+    return "".join(entry.get() for entry in entries[state.attempts if state.attempts < 6 else 5])
 
 if __name__ == "__main__":
     master.mainloop()
