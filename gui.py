@@ -1,6 +1,7 @@
 import state
 import tkinter as tk
 from tkinter import ttk
+import tkinter.messagebox as messagebox
 
 master = tk.Tk()
 master.title("Wordle Game")
@@ -61,7 +62,7 @@ for i in range(6):
             width=2,
             justify='center',
             style="Grey.TEntry",
-            state="normal" if i == 0 else "readonly")
+            state="normal" if i == 0 and j == 0 else "readonly")
         entry.grid(row=i, column=j, padx=5, pady=5)
         entries_row.append(entry)
         
@@ -106,20 +107,45 @@ def on_key(event, row, col):
 def get_current_guess():
     return ("".join(entry.get() for entry in entries[state.attempts if state.attempts < 6 else 5])).lower()
 
+def show_popup(title, message, color, function="end"):
+    popup = tk.Toplevel(master)
+    popup.title(title)
+    popup.config(bg=color)
+    popup.geometry("300x200")
+    label = tk.Label(popup, text=message, bg=color, fg='black', font=('Arial', 14))
+    label.pack(padx=20, pady=20)
+    if function == "end":
+        button = tk.Button(popup, text="Exit", command=master.destroy)
+    elif function == "continue":
+         button = tk.Button(popup, text="OK", command=popup.destroy)
+    button.pack(pady=10)
+    popup.grab_set()
+
 def on_submit(row):
-        if state.current_guess == state.current_word:
-            print("Congratulations! You've guessed the word:", state.current_word)
-            exit()
-        if state.attempts >= 6:
-            print("Game Over! The word was:", state.current_word)
-            exit()
-        for i in range(len(state.current_guess)):
-            if state.current_guess[i] == state.current_word[i]:
-                entries[row][i].config(state="readonly", style="Green.TEntry")
-            elif state.current_guess[i] in state.current_word:
-                entries[row][i].config(state="readonly", style="Yellow.TEntry")
-            else:
-                entries[row][i].config(state="readonly", style="Grey.TEntry")
-        state.attempts += 1
+    global current_row
+    global current_col
+    state.attempts += 1
+    if state.current_guess not in state.words:
+        for i in range(5):
+            entries[current_row][i].config(state="normal")
+            entries[current_row][i].delete(0, "end")
+        show_popup("Invalid Word", "Not in word list", "white", "continue")
+        current_row -= 1 
+        current_col = 0
+        only_current()
+        state.attempts -= 1
+        return
+    if state.current_guess == state.current_word:
+        show_popup("You won :)", "Congrats!", "green")
+    if state.attempts >= 6:
+        show_popup("You lost :(", "The word was: " + state.current_word, "red")
+    for i in range(len(state.current_guess)):
+        if state.current_guess[i] == state.current_word[i]:
+            entries[row][i].config(state="readonly", style="Green.TEntry")
+        elif state.current_guess[i] in state.current_word:
+            entries[row][i].config(state="readonly", style="Yellow.TEntry")
+        else:
+            entries[row][i].config(state="readonly", style="Grey.TEntry")
+    
 
 master.mainloop()
