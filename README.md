@@ -1,12 +1,12 @@
-\# Wordle Game
+# Wordle Game
 
-\## What is this?
+## What is this?
 
 This is the sixth task for the MIA (Made In Alexandria) robotics team, and it required us to create a working wordle game with a fully functional GUI using a dataset of five-letter words.
 
 
 
-\## Folder Structure
+## Folder Structure
 
 | Name | Contents |
 
@@ -20,19 +20,19 @@ This is the sixth task for the MIA (Made In Alexandria) robotics team, and it re
 
 
 
-\## Logical Structure
+## Logical Structure
 
-\### Code flow
+### Code flow
 
-1\. gui.py builds the UI (grid of entry widgets) and handles input.
-
-
-
-2\. Player types letters; input is restricted to the current cell and letters only.
+1. gui.py builds the UI (grid of entry widgets) and handles input.
 
 
 
-3\. On Enter (last column and can't be empty), the row is read and:
+2. Player types letters; input is restricted to the current cell and letters only.
+
+
+
+3. On Enter (last column and can't be empty), the row is read and:
 
 
 
@@ -44,35 +44,35 @@ player retries same row.
 
 &nbsp;  - If valid → color feedback applied, attempts incremented, move to next row.
 
-4\. If the guess matches the currently selected word from the word list, show a popup that indicates a win. If all attempts are used, show a popup that indicates a loss.
+4. If the guess matches the currently selected word from the word list, show a popup that indicates a win. If all attempts are used, show a popup that indicates a loss.
 
 
 
-\### Design choices
+### Design choices
 
 
 
-1\. all logic happens in response to UI events, which is appropriate for Tkinter.
+1. all logic happens in response to UI events, which is appropriate for Tkinter.
 
-2\. restrict input to the active cell: achieves Wordle-like sequential typing and maintains game state.
+2. restrict input to the active cell: achieves Wordle-like sequential typing and maintains game state.
 
-3\. readonly + styles for feedback: locks past rows and visually communicates correctness.
+3. readonly + styles for feedback: locks past rows and visually communicates correctness.
 
-4\. colored popups to clearly indicate game state (win or loss)
-
-
-
-\### Main functions
+4. colored popups to clearly indicate game state (win or loss)
 
 
 
-\#### on\_key(event, row, col)
-
-\- Ensures only the active cell accepts input; redirects focus if needed.
+### Main functions
 
 
 
-\- Handles:
+#### on_key(event, row, col)
+
+- Ensures only the active cell accepts input; redirects focus if needed.
+
+
+
+- Handles:
 
 
 
@@ -84,21 +84,21 @@ player retries same row.
 
 
 
-&nbsp; - Enter: if last cell has text, builds the guess and calls on\_submit.
+&nbsp; - Enter: if last cell has text, builds the guess and calls on_submit.
 
 
 
-\### on\_submit(row)
+### on_submit(row)
 
-\- Reads the current guess (get\_current\_guess()).
-
-
-
-\- If not in state.words: clear the row, show invalid-word popup, keep same row.
+- Reads the current guess (get_current_guess()).
 
 
 
-\- If valid:
+- If not in state.words: clear the row, show invalid-word popup, keep same row.
+
+
+
+- If valid:
 
 
 
@@ -106,11 +106,11 @@ player retries same row.
 
 
 
-&nbsp; - Increment attempts, moves on to the next row, resets current\_col variable to start again from the first box in that row.
+&nbsp; - Increment attempts, moves on to the next row, resets current_col variable to start again from the first box in that row.
 
 
 
-&nbsp; - If guess == current\_word → show win popup.
+&nbsp; - If guess == current_word → show win popup.
 
 
 
