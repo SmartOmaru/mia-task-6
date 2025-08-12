@@ -57,3 +57,8 @@ player retries same row.
   - If guess == current_word → show win popup.
 
   - If attempts all attempts have been used → show loss popup.
+
+## Future Improvements
+- Add a “New Game” button that picks a new word from the dataset and resets state.
+- Add keyboard shortcuts (arrow keys) to navigate rows.
+- Add a keyboard UI that shows currently guessed letters and their availability in the word with the choice to type with it, like in Wordle.
