@@ -3,7 +3,7 @@ from random import choice as random_choice
 with open("words.txt", "r") as file:
     words = [line.strip() for line in file] 
       
-entries = []
+entries = [0]
 current_word = random_choice(words)
 current_guess = str("")
 attempts = 0
