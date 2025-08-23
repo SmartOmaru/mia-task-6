@@ -19,7 +19,7 @@ label = tk.Label(
 
 #create frame and pack label and frame
 label.pack(pady=20)
-frame = tk.Frame(master, bg='grey')
+frame = tk.Frame(master, bg='black')
 frame.pack()
 
 #create style for the letter entry boxes
